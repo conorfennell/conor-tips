@@ -1,2 +1,6 @@
 name = "backend"
 compatibility_date = "2023-01-01"
+[[d1_databases]]
+binding = "database"
+database_name = "prod-database"
+database_id = "cdbc4563-6dcb-4112-8a3e-8a53af48cc71"

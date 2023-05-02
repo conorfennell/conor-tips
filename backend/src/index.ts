@@ -1,20 +1,20 @@
 import { Hono } from 'hono'
 import { User } from './user'
 
-const app = new Hono()
-
-const userMap = new Map<number, User>();
-userMap.set(1, new User('Conor Fennell', 30, 'johndoe@example.com'));
-userMap.set(2, new User('Jim Fennell', 30, 'johndoe@example.com'));
-
-function getUser(id: number) {
-    return userMap.get(id);
-}
+interface Env {
+    DB: D1Database
+  }
+  
+const app = new Hono<{ Bindings: Env }>()
 
 app.get('/', (c) => c.text('Hello Cloudflare Workers!'))
-app.get('/v1/users/:id', (c) => {
+app.get('/v1/users/:id', async c => {
     const id = Number.parseInt(c.req.param('id'));
-    return c.json(getUser(id));
+
+    console.log(id);
+    const user = await c.env.database.prepare('SELECT * FROM Customers WHERE CustomerID = ? LIMIT 1').bind(id).first<User>();
+    console.log(user);
+    return c.json(user);
 });
 
 export default app
